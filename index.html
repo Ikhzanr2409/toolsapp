@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Ad Auto-Click Tool</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            background-color: #fff;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        .section {
+            margin: 30px 0;
+            padding: 20px;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+
+        .ad-input-area {
+            margin-bottom: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        .controls {
+            margin: 20px 0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 10px 15px;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background-color: #2ecc71;
+        }
+
+        .btn-primary:hover {
+            background-color: #27ae60;
+        }
+
+        .btn-danger {
+            background-color: #e74c3c;
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        .btn-info {
+            background-color: #3498db;
+        }
+
+        .btn-info:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-warning {
+            background-color: #f39c12;
+        }
+
+        .btn-warning:hover {
+            background-color: #d35400;
+        }
+
+        .log {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f1f1f1;
+            border-radius: 5px;
+            border-left: 4px solid #3498db;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+            font-family: monospace;
+            font-size: 13px;
+        }
+
+        .warning-note {
+            background-color: #fff8e1;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .ad-preview {
+            min-height: 100px;
+            padding: 15px;
+            border: 1px dashed #3498db;
+            border-radius: 5px;
+            margin-top: 15px;
+            background-color: white;
+        }
+
+        .ad-management {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .ad-list {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .ad-details {
+            flex: 2;
+            min-width: 300px;
+        }
+
+        .ad-item {
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #fff;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            cursor: pointer;
+        }
+
+        .ad-item:hover {
+            background-color: #f0f8ff;
+        }
+
+        .ad-item.active {
+            border-color: #3498db;
+            background-color: #e8f4fc;
+        }
+
+        .ad-item-header {
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+        }
+
+        .ad-stats {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .interval-controls {
+            margin-top: 15px;
+        }
+
+        .interval-controls label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .interval-controls input {
+            width: 80px;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        .clickable-elements {
+            margin-top: 15px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 10px;
+            background-color: #f1f1f1;
+            border-radius: 4px;
+        }
+
+        .clickable-element {
+            padding: 5px;
+            margin-bottom: 5px;
+            background-color: #fff;
+            border-radius: 3px;
+            font-size: 12px;
+            word-break: break-all;
+        }
+
+        @media (max-width: 768px) {
+            .ad-management {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Multi-Ad Auto-Click Tool</h1>
+        
+        <div class="section">
+            <h2>1. Input Your Ad Code</h2>
+            <div class="ad-input-area">
+                <p>Paste your ad code below (AdSense, HTML, JavaScript, etc.):</p>
+                <textarea id="adCodeInput" placeholder="Paste your ad code here..."></textarea>
+            </div>
+            
+            <div class="controls">
+                <button id="previewBtn" class="btn-primary">Preview Ad</button>
+                <button id="addAdBtn" class="btn-info">Add to Ad Collection</button>
+                <button id="clearAllBtn" class="btn-danger">Clear All Ads</button>
+            </div>
+            
+            <div class="ad-preview" id="adPreview">
+                Ad preview will appear here
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>2. Manage Your Ads</h2>
+            <div class="ad-management">
+                <div class="ad-list">
+                    <h3>Your Ads Collection</h3>
+                    <div id="adsCollection">
+                        <p>No ads added yet</p>
+                    </div>
+                </div>
+                
+                <div class="ad-details">
+                    <h3>Ad Details</h3>
+                    <div id="adDetails">
+                        <p>Select an ad to view details</p>
+                    </div>
+                    
+                    <div class="interval-controls">
+                        <label for="clickInterval">Click Interval (seconds):</label>
+                        <input type="number" id="clickInterval" min="1" max="60" value="5">
+                    </div>
+                    
+                    <div class="controls">
+                        <button id="startSelectedBtn" class="btn-primary">Start Selected Ad</button>
+                        <button id="startAllBtn" class="btn-info">Start All Ads</button>
+                        <button id="stopAllBtn" class="btn-danger">Stop All</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="log" id="log">
+            <div class="log-entry">Ready to begin. Paste your ad code above.</div>
+        </div>
+        
+        <div class="warning-note">
+            <strong>Important Warning:</strong> Automatically clicking on advertisements is against the terms of service of most advertising networks. This tool is for educational purposes only. Use responsibly and at your own risk.
+        </div>
+    </div>
+
+    <script>
+        // DOM elements
+        const adCodeInput = document.getElementById('adCodeInput');
+        const previewBtn = document.getElementById('previewBtn');
+        const addAdBtn = document.getElementById('addAdBtn');
+        const clearAllBtn = document.getElementById('clearAllBtn');
+        const startSelectedBtn = document.getElementById('startSelectedBtn');
+        const startAllBtn = document.getElementById('startAllBtn');
+        const stopAllBtn = document.getElementById('stopAllBtn');
+        const clickIntervalInput = document.getElementById('clickInterval');
+        const logElement = document.getElementById('log');
+        const adPreview = document.getElementById('adPreview');
+        const adsCollection = document.getElementById('adsCollection');
+        const adDetails = document.getElementById('adDetails');
+        
+        // Variables
+        let ads = [];
+        let selectedAdIndex = -1;
+        let activeIntervals = [];
+        
+        // Function to add log entry
+        function addLog(message) {
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logElement.insertBefore(logEntry, logElement.firstChild);
+            
+            // Auto-scroll to bottom
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+        
+        // Function to extract clickable elements from ad code
+        function extractClickableElements(adHtml) {
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = adHtml;
+            
+            // Get all links, buttons, and elements with click handlers
+            const clickableElements = Array.from(tempDiv.querySelectorAll('a, button, [onclick], [href]')).filter(el => {
+                return el.href && el.href !== '#' && el.href !== 'javascript:void(0)' ||
+                       el.onclick ||
+                       el.getAttribute('onclick');
+            });
+            
+            return clickableElements.map(el => {
+                return {
+                    element: el,
+                    originalHTML: el.outerHTML,
+                    originalOnClick: el.onclick
+                };
+            });
+        }
+        
+        // Function to preview the ad
+        function previewAd() {
+            const code = adCodeInput.value.trim();
+            if (!code) {
+                addLog("No ad code entered to preview");
+                return;
+            }
+            
+            adPreview.innerHTML = code;
+            addLog("Ad preview updated (not added to collection yet)");
+        }
+        
+        // Function to add ad to collection
+        function addAdToCollection() {
+            const code = adCodeInput.value.trim();
+            if (!code) {
+                addLog("No ad code entered to add");
+                return;
+            }
+            
+            const clickableElements = extractClickableElements(code);
+            
+            const newAd = {
+                id: Date.now(),
+                code: code,
+                clickableElements: clickableElements,
+                clickCount: 0,
+                active: false,
+                intervalId: null
+            };
+            
+            ads.push(newAd);
+            updateAdsCollectionUI();
+            updateAdDetailsUI(ads.length - 1);
+            
+            addLog(`Added new ad (${ads.length} total)`);
+        }
+        
+        // Function to update ads collection UI
+        function updateAdsCollectionUI() {
+            if (ads.length === 0) {
+                adsCollection.innerHTML = '<p>No ads added yet</p>';
+                return;
+            }
+            
+            adsCollection.innerHTML = '';
+            
+            ads.forEach((ad, index) => {
+                const adItem = document.createElement('div');
+                adItem.className = `ad-item ${selectedAdIndex === index ? 'active' : ''}`;
+                adItem.dataset.index = index;
+                
+                const clickableCount = ad.clickableElements.length;
+                
+                adItem.innerHTML = `
+                    <div class="ad-item-header">
+                        <span>Ad #${index + 1}</span>
+                        <span class="ad-stats">${clickableCount} clickable ${clickableCount === 1 ? 'element' : 'elements'}</span>
+                    </div>
+                    <div class="ad-stats">Clicks: ${ad.clickCount} | Status: ${ad.active ? 'Active' : 'Inactive'}</div>
+                `;
+                
+                adItem.addEventListener('click', () => {
+                    selectedAdIndex = index;
+                    updateAdsCollectionUI();
+                    updateAdDetailsUI(index);
+                });
+                
+                adsCollection.appendChild(adItem);
+            });
+        }
+        
+        // Function to update ad details UI
+        function updateAdDetailsUI(index) {
+            if (index === -1 || !ads[index]) {
+                adDetails.innerHTML = '<p>Select an ad to view details</p>';
+                return;
+            }
+            
+            const ad = ads[index];
+            const clickableElementsHTML = ad.clickableElements.map((el, i) => {
+                return `<div class="clickable-element">${i + 1}. ${el.originalHTML}</div>`;
+            }).join('');
+            
+            adDetails.innerHTML = `
+                <h4>Ad #${index + 1} Details</h4>
+                <div><strong>Status:</strong> ${ad.active ? 'Active' : 'Inactive'}</div>
+                <div><strong>Total Clicks:</strong> ${ad.clickCount}</div>
+                <div><strong>Clickable Elements:</strong></div>
+                <div class="clickable-elements">
+                    ${clickableElementsHTML || 'No clickable elements found'}
+                </div>
+            `;
+        }
+        
+        // Function to simulate an ad click
+        function clickAd(adIndex) {
+            if (!ads[adIndex]) return;
+            
+            const ad = ads[adIndex];
+            if (ad.clickableElements.length === 0) return;
+            
+            // Select a random clickable element
+            const randomIndex = Math.floor(Math.random() * ad.clickableElements.length);
+            const elementInfo = ad.clickableElements[randomIndex];
+            
+            // Create a temporary element to click
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = elementInfo.originalHTML;
+            const element = tempDiv.firstChild;
+            
+            // Restore original onclick handler
+            if (elementInfo.originalOnClick) {
+                element.onclick = elementInfo.originalOnClick;
+            }
+            
+            // Create and dispatch a click event
+            const clickEvent = new MouseEvent('click', {
+                view: window,
+                bubbles: true,
+                cancelable: true
+            });
+            
+            element.dispatchEvent(clickEvent);
+            ad.clickCount++;
+            
+            addLog(`Ad #${adIndex + 1}: Auto-click triggered on element #${randomIndex + 1}`);
+            updateAdsCollectionUI();
+            updateAdDetailsUI(adIndex);
+        }
+        
+        // Function to start auto-clicking a specific ad
+        function startAd(adIndex) {
+            if (!ads[adIndex]) return;
+            
+            const ad = ads[adIndex];
+            if (ad.active) return;
+            
+            const interval = parseInt(clickIntervalInput.value) * 1000;
+            if (isNaN(interval) || interval < 1000) {
+                addLog("Invalid interval. Must be at least 1 second.");
+                return;
+            }
+            
+            ad.active = true;
+            
+            // Click immediately
+            clickAd(adIndex);
+            
+            // Set up interval for subsequent clicks
+            ad.intervalId = setInterval(() => {
+                clickAd(adIndex);
+            }, interval);
+            
+            activeIntervals.push(ad.intervalId);
+            addLog(`Ad #${adIndex + 1}: Auto-click started (${interval/1000}s interval)`);
+            updateAdsCollectionUI();
+            updateAdDetailsUI(adIndex);
+        }
+        
+        // Function to stop all auto-clicking
+        function stopAllAds() {
+            activeIntervals.forEach(intervalId => {
+                clearInterval(intervalId);
+            });
+            
+            activeIntervals = [];
+            
+            ads.forEach(ad => {
+                ad.active = false;
+                ad.intervalId = null;
+            });
+            
+            addLog("All auto-clicking stopped");
+            updateAdsCollectionUI();
+            updateAdDetailsUI(selectedAdIndex);
+        }
+        
+        // Function to clear all ads
+        function clearAllAds() {
+            stopAllAds();
+            ads = [];
+            selectedAdIndex = -1;
+            updateAdsCollectionUI();
+            updateAdDetailsUI(-1);
+            addLog("All ads cleared from collection");
+        }
+        
+        // Event listeners
+        previewBtn.addEventListener('click', previewAd);
+        addAdBtn.addEventListener('click', addAdToCollection);
+        clearAllBtn.addEventListener('click', clearAllAds);
+        startSelectedBtn.addEventListener('click', () => {
+            if (selectedAdIndex !== -1) {
+                startAd(selectedAdIndex);
+            } else {
+                addLog("Please select an ad first");
+            }
+        });
+        startAllBtn.addEventListener('click', () => {
+            if (ads.length === 0) {
+                addLog("No ads to start");
+                return;
+            }
+            
+            ads.forEach((ad, index) => {
+                startAd(index);
+            });
+        });
+        stopAllBtn.addEventListener('click', stopAllAds);
+        
+        // Initialize
+        addLog("Ready to begin. Paste your ad code above.");
+    </script>
+</body>
+</html>
